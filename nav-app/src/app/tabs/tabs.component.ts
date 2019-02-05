@@ -62,7 +62,11 @@ export class TabsComponent implements AfterContentInit {
                 // console.log(this.loadURL)
                 this.loadLayerFromURL(this.loadURL, true);
                 if (this.dynamicTabs.length == 0) this.newLayer(); // failed load from url, so create new blank layer
-            } else if (config["default_layers"]["enabled"]){
+            } else if (this.getNamedFragmentValue("layerb64JSON")) {
+                this.loadb64JSON = this.getNamedFragmentValue("layerb64JSON");
+                this.loadLayerFromJSON(this.loadb64JSON, true);
+                if (this.dynamicTabs.length == 0) this.newLayer();
+        } else if (config["default_layers"]["enabled"]){
                 let first = true;
                 for (let url of config["default_layers"]["urls"]) {
                     console.log(url);
@@ -494,6 +498,30 @@ export class TabsComponent implements AfterContentInit {
 
     }
 
+    loadb64JSON: string = "";
+    
+    loadLayerFromJSON(b64JSON, replace): void {
+        try {
+            let plainJSON: string = atob(b64JSON);
+            let viewModel = this.viewModelsService.newViewModel("loading layer...");
+            let content = plainJSON;
+            try {
+                viewModel.deSerialize(content)
+                console.log(plainJSON, viewModel);
+                this.openTab("new layer", this.layerTab, viewModel, true, replace, true, true)
+            } catch(err) {
+                console.log(err)
+                alert("ERROR: Failed to load layer file from URL")
+                this.viewModelsService.destroyViewModel(viewModel)
+            }
+        } catch(err) {
+            console.error(err)
+            alert("ZACK JSON ERROR: " + err.statusText)
+        }
+    
+        // var jobj = JSON.parse(text);
+    
+    }
 
     //   ___ _   _ ___ _____ ___  __  __ ___ _______ ___    _  _   ___   _____ ___   _ _____ ___  ___   ___ _____ _   _ ___ ___
     //  / __| | | / __|_   _/ _ \|  \/  |_ _|_  / __|   \  | \| | /_\ \ / /_ _/ __| /_\_   _/ _ \| _ \ / __|_   _| | | | __| __|
