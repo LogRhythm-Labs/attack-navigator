@@ -516,11 +516,9 @@ export class TabsComponent implements AfterContentInit {
             }
         } catch(err) {
             console.error(err)
-            alert("ZACK JSON ERROR: " + err.statusText)
+            alert("JSON ERROR: " + err.statusText)
         }
-    
-        // var jobj = JSON.parse(text);
-    
+            
     }
 
     //   ___ _   _ ___ _____ ___  __  __ ___ _______ ___    _  _   ___   _____ ___   _ _____ ___  ___   ___ _____ _   _ ___ ___
